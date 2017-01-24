@@ -1,0 +1,49 @@
+$s: 6.4;
+
+$border : black;
+
+$imgUp_BG_Color: #f2dfdf;
+$imgUp_BD_Color: #67094b;
+$imgUP-file:	"img/upload.png";
+
+.i-form.container{
+	width: 100px*$s
+}
+
+form#i-form{
+
+	label{
+		width: 150px;
+		height: 150px;
+		border: 2px solid $imgUp_BD_Color;
+		background : $imgUp_BG_Color url($imgUP-file) no-repeat center center;
+		cursor: pointer;
+
+		&:hover{
+			background-color : lighten($imgUp_BG_Color, 2);
+		}
+	}
+	
+	input[type=file] {
+		width: 0.1px;
+		height: 0.1px;
+		opacity: 0;
+		overflow: hidden;
+		position: absolute;
+		z-index: -1;
+	}
+
+
+	*{
+		// border: 1px solid $border;
+	}
+
+	#if-header-title input{
+		width: 100%;
+	}
+
+	.if-header-line{
+		width: 100%;
+		height: 18px;
+	}
+}

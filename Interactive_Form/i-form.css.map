@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAGC,aAAC;EACA,MAAM,EAAE,eAAiB;AAG1B,sBAAU;EACT,UAAU,EAAE,IAAI",
-"sources": ["i-form.scss"],
-"names": [],
-"file": "i-form.css"
-}
