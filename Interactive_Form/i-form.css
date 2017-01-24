@@ -1,3 +1,6 @@
-
+form#i-form * {
+  border: 1px solid black; }
+form#i-form #if-header {
+  min-height: 80px; }
 
 /*# sourceMappingURL=i-form.css.map */

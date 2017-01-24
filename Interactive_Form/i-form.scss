@@ -1,0 +1,11 @@
+$border : black;
+
+form#i-form{
+	*{
+		border: 1px solid $border;
+	}
+
+	#if-header{
+		min-height: 80px;
+	}
+}
