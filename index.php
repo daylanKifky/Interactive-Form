@@ -4,6 +4,7 @@
    // phpinfo();
 
 ?>
+
 <html>
    <head>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -24,7 +25,8 @@
                <h1>Interactive content loader</h1>
                <form id="i-form" action="" method="POST" enctype="multipart/form-data">
                <div class="row">
-                  <div class="col-xs-3" id='if-logo'> <!-- LOGO -->
+                  <div class="col-xs-3 if-image-loader-container" id='if-logo'> <!-- LOGO -->
+                     <img class="if-up-image" src="" alt="User uploaded Image">
                      <input class="if-image-loader" type="file" name="image" id="logo" />
                      <label for="logo"></label>
                      
@@ -52,6 +54,7 @@
                <dir class="row">
                   <div class="col-xs-12" id='if-body'> <!-- BODY -->
                      <div id="if-body-langA">
+                      <img class="if-up-image" src="" alt="User uploaded Image">
                         <input class="if-image-loader" type="file" name="image" id="image01" />
                         <label for="image01"></label>
                      </div>

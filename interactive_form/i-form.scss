@@ -11,8 +11,20 @@ $imgUP-file:	"img/upload.png";
 }
 
 form#i-form{
+	.if-image-loader-container{
+		overflow:hidden;
+	}
+
+	img.if-up-image{
+		position: absolute;
+		width:100%;
+		heigth: auto;
+		z-index:-1;
+	}
 
 	label{
+		z-index:1;
+		opacity:1;
 		width: 150px;
 		height: 150px;
 		border: 2px solid $imgUp_BD_Color;
