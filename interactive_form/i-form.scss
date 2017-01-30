@@ -11,7 +11,7 @@ $imgUP-file:	"img/upload.png";
 }
 
 form#i-form{
-	.if-image-loader-container{
+	.if-image-container{
 		overflow:hidden;
 	}
 
@@ -34,6 +34,17 @@ form#i-form{
 		&:hover{
 			background-color : lighten($imgUp_BG_Color, 2);
 		}
+
+		&.if-file-loaded{
+			opacity:0.01;
+
+			&:hover{
+				opacity:1;
+				background : transparent url($imgUP-file) no-repeat center center;
+			}
+		}
+
+
 	}
 	
 	input[type=file] {

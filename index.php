@@ -25,11 +25,7 @@
                <h1>Interactive content loader</h1>
                <form id="i-form" action="" method="POST" enctype="multipart/form-data">
                <div class="row">
-                  <div class="col-xs-3 if-image-loader-container" id='if-logo'> <!-- LOGO -->
-                     <img class="if-up-image" src="" alt="User uploaded Image">
-                     <input class="if-image-loader" type="file" name="image" id="logo" />
-                     <label for="logo"></label>
-                     
+                  <div class="col-xs-3 if-image-loader" id='if-logo' if-label="logo"> 
                   </div>
                   <div class="col-xs-9" id='if-header'> <!-- HEADER -->
                      <div id="if-header-title">
@@ -51,21 +47,27 @@
                   </div>
                </div>
 
-               <dir class="row">
+               <div class="row">
                   <div class="col-xs-12" id='if-body'> <!-- BODY -->
                      <div id="if-body-langA">
-                      <img class="if-up-image" src="" alt="User uploaded Image">
-                        <input class="if-image-loader" type="file" name="image" id="image01" />
-                        <label for="image01"></label>
+                         <input class="if-header-line" type="text" name="ContentES" placeholder="La descripcion de tu tienda" /> 
                      </div>
                      <div id="if-body-langB">
+                        <input class="if-header-line" type="text" name="ContentES" placeholder="Your Stores Description" /> 
                         
                      </div>
 
                   </div>
-               </dir>
+               </div>
+               <div class="col-xs-3 if-image-loader" id='if-imag01' if-label="img01"> 
+                  </div>
+                  <div class="col-xs-3 if-image-loader" id='if-imag02' if-label="img02"> 
+                  </div>
+                                   <!--  <img class="if-up-image" src="" alt="User uploaded Image">
+                        <input class="if-image-loader" type="file" name="image" id="image01" />
+                        <label for="image01"></label> -->
 
-                  <input type="submit"/>
+                  <input id='if-sumbit' type="submit"/>
                </form>
                
             </div>
