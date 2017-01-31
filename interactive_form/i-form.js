@@ -2,14 +2,64 @@ var c = console.log;
 (function($){
 	$(document).ready(function(){
 
-		
+		//Questo sarebbe l'uso basico della parte che già funziona. (adesso commentato per provare l'inheritance)
+	
+		// theForm = new IForm($);
+		// theForm.createElements();
+		// theForm.setEvents();
+	
 
+		//Si prendono tutti i div con una classe "if-image-loader" e si creano i
+		//elementi necesari (un input, un label, e un img)
+		//
+		//Poi si settano i eventi.
+		//
+		//L'idea è che IForm, oltre a chiamare i Builder e settare eventi, 
+		//porta un registro dei dati caricati in IForm.data 
 
-		theForm = new IForm($);
-		theForm.createElements();
-		theForm.setEvents();
 	});
 }(jQuery));
+
+//////////////////////////////////
+/// INHERITANCE TEST
+///  
+//////////////////////////////////
+
+//Input Builder dovrebbe essere il genitore, adesso ne ha soltanto delle proprietà di prova
+function InputBuilder(){
+	this.basicProp = "que paja";
+
+	this.print = function(){ c(this.basicProp); };
+}
+
+//Questa serve soltanto per provare a eredirate sia le "data-members", che i metodi
+//Per ora il pattern "parasitic inheritance sembra d'essere quello che funziona meglio",
+//Ma non risco a soprascrivere la funzione print().
+//
+function Child(){
+	var parent = new InputBuilder();
+	parent.extraProp = "realmente una paja"
+
+	parent.print = function(){
+		parent.print();
+		c(parent.extraProp);
+	}
+
+	return parent;
+
+}
+
+// Child.prototype = Object.create(InputBuilder.prototype);
+var elpapa = new InputBuilder();
+var elchild = new Child();
+// elchild.print();
+// c(elchild.b)
+
+
+//--------- La parte di qua sotto funziona bene, ma visto che 
+//ci sono diversi tipi di input, ho pensato che non sarebbe male 
+//fare un unico "input-Builder" da cui derivare gli altri 
+//
 
 
 //////////////////////////////////
@@ -23,7 +73,7 @@ function IForm_ImageBuilder(jQObject,
 	this.type = "image";
 	this.subtype = "foto"
 	this.id = jQObject.attr("id")+"-input";
-	this.name = jQObject.attr("if-label")
+	this.name = jQObject.attr("if-label");
 	this.dimensions = imgSpecs.dimensions;
 	this.formats = imgSpecs.formats;
 
@@ -45,7 +95,12 @@ function IForm_ImageBuilder(jQObject,
 /// TEXT INPUT BUILDER 
 //////////////////////////////////
 
-function IForm_TextBuilder
+function IForm_TextBuilder(	jQObject, 
+							textSpecs,
+							dataObj ){
+
+
+}
 
 //////////////////////////////////
 /// IFORM 
