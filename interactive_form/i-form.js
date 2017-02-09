@@ -73,7 +73,6 @@ function IForm(){
 	this._userInputKey = 'user_input'; //INI
 	this._cookieID = Cookies.get('id_client');
 
-	c(this._cookieID);
 
 	//////////////////////////////////
 	/// DATA 
@@ -153,22 +152,14 @@ IForm.prototype = {
 	setSubmitEvent:function(){
 		var iform = this;
 
-		// if (false)
 		$(this._form).submit(function(event){
-		// var thedata = new FormData();
-		// thedata.append("image", iform.data.images[0].file);
-		//  c(thedata);
-			// c(iform.data.images[0].file);
-
-			// c(iform.files);
-			iform.files.append("CLIENT_ID", 223);
+			iform.files.append("CLIENT_ID", iform._cookieID);
 
 			if (typeof iform.data.images[0].file != undefined)
 			$.ajax({
-				url:'recibe_files_test.php',
+				url:'recibe_files.php',
 				type:"POST",
 				data: iform.files,
-				// data: {"estacaliente":"lapapa"},
 				cache: false,
 				contentType: false,
 		    	processData: false,
