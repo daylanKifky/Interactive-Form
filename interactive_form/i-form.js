@@ -1,12 +1,10 @@
 var c = console.log;
 (function($){
 	$(document).ready(function(){
-
 		//Questo sarebbe l'uso basico della parte che già funziona. (adesso commentato per provare l'inheritance)
-	
-		// theForm = new IForm($);
-		// theForm.createElements();
-		// theForm.setEvents();
+		theForm = new IForm($);
+		theForm.createElements();
+		theForm.setEvents();
 	
 
 		//Si prendono tutti i div con una classe "if-image-loader" e si creano i
@@ -20,46 +18,6 @@ var c = console.log;
 	});
 }(jQuery));
 
-//////////////////////////////////
-/// INHERITANCE TEST
-///  
-//////////////////////////////////
-
-//Input Builder dovrebbe essere il genitore, adesso ne ha soltanto delle proprietà di prova
-function InputBuilder(){
-	this.basicProp = "que paja";
-
-	this.print = function(){ c(this.basicProp); };
-}
-
-//Questa serve soltanto per provare a eredirate sia le "data-members", che i metodi
-//Per ora il pattern "parasitic inheritance sembra d'essere quello che funziona meglio",
-//Ma non risco a soprascrivere la funzione print().
-//
-function Child(){
-	var parent = new InputBuilder();
-	parent.extraProp = "realmente una paja"
-
-	parent.print = function(){
-		parent.print();
-		c(parent.extraProp);
-	}
-
-	return parent;
-
-}
-
-// Child.prototype = Object.create(InputBuilder.prototype);
-var elpapa = new InputBuilder();
-var elchild = new Child();
-// elchild.print();
-// c(elchild.b)
-
-
-//--------- La parte di qua sotto funziona bene, ma visto che 
-//ci sono diversi tipi di input, ho pensato che non sarebbe male 
-//fare un unico "input-Builder" da cui derivare gli altri 
-//
 
 
 //////////////////////////////////
@@ -111,15 +69,22 @@ function IForm(){
 	this._silbingImage = ".if-up-image";
 	this._fileLoaded = "if-file-loaded";
 	this._submitBtn = "input#if-sumbit";
+	this._form = "#i-form";
+	this._userInputKey = 'user_input'; //INI
+	this._cookieID = Cookies.get('id_client');
+
+	c(this._cookieID);
 
 	//////////////////////////////////
 	/// DATA 
 	//////////////////////////////////	
 	this.data={
-			images:{},
+			images:[],
 			header:{},
 			content:{}
 		};
+
+	this.files = new FormData();
 }
 
 IForm.prototype = {
@@ -136,6 +101,7 @@ IForm.prototype = {
 	createElements: function(){
 		var iform = this;
 		$(IForm_ImageBuilder.prototype.if_class).each(function(){
+			c(this);
 				new IForm_ImageBuilder($(this), 
 					IForm.prototype.imageDefaults, 
 					iform.data.images);
@@ -166,12 +132,16 @@ IForm.prototype = {
 	setImgEvent:function(){
 		var iform = this;
 		$(this._loaders).change(function(event){
-			var data = iform.data.images[$(this).attr("name")];
+			var data = {name:$(this).attr("name")};
+			iform.data.images.push(data);
+
+			iform.files.append(data.name, event.target.files[0]);
 			
 			data.originalTitle = event.target.files[0].name;
 			data.type = event.target.files[0].type;
 			data.size = event.target.files[0].size;
-			data.imageData = URL.createObjectURL(event.target.files[0]);
+			data.imageData = (URL || webkitURL).createObjectURL(event.target.files[0]);
+			data.file = event.target.files[0];
 			data.uploads ++;
 			iform.setImageSrc(this, data.imageData );
 			iform.setLabelClass(this);
@@ -182,12 +152,97 @@ IForm.prototype = {
 
 	setSubmitEvent:function(){
 		var iform = this;
-		$(this._submitBtn).click(function(e){
-			e.preventDefault();
+
+		// if (false)
+		$(this._form).submit(function(event){
+		// var thedata = new FormData();
+		// thedata.append("image", iform.data.images[0].file);
+		//  c(thedata);
+			// c(iform.data.images[0].file);
+
+			// c(iform.files);
+			iform.files.append("CLIENT_ID", 223);
+
+			if (typeof iform.data.images[0].file != undefined)
+			$.ajax({
+				url:'recibe_files_test.php',
+				type:"POST",
+				data: iform.files,
+				// data: {"estacaliente":"lapapa"},
+				cache: false,
+				contentType: false,
+		    	processData: false,
+
+		    	xhr: function(){
+		    		var myXhr = $.ajaxSettings.xhr();
+		    		if (myXhr.upload) {
+		                // For handling the progress of the upload
+		                myXhr.upload.addEventListener('progress', function(e) {
+		                    if (e.lengthComputable) {
+		                    	c( e.loaded + " | " + e.total);
+		                    }
+		                } , false);
+		            }
+		            return myXhr;
+		    	},
+
+		    	success: function(respose){
+		    		c(respose);
+		    	}
+			});
+
+			// iform.data.images.forEach(function(image){
+			// 	$('<input />').attr('type', 'hidden')
+			// 	         .attr('name', iform._userInputKey+"[img][]")
+			// 	         .attr('value', image.imageData)
+			// 	         .appendTo(iform._submitBtn);
+			// 	});
+			
+			return false;
 		});
+
+
+		// $(this._submitBtn).click(function(e){
+		// 	e.preventDefault();
+		// });
 	}
 }
 
 
+
+//////////////////////////////////
+/// INHERITANCE TEST
+///  
+//////////////////////////////////
+
+// //Input Builder dovrebbe essere il genitore, adesso ne ha soltanto delle proprietà di prova
+// function InputBuilder(){
+// 	this.basicProp = "que paja";
+
+// 	this.print = function(){ c(this.basicProp); };
+// }
+
+// //Questa serve soltanto per provare a eredirate sia le "data-members", che i metodi
+// //Per ora il pattern "parasitic inheritance sembra d'essere quello che funziona meglio",
+// //Ma non risco a soprascrivere la funzione print().
+// //
+// function Child(){
+// 	var parent = new InputBuilder();
+// 	parent.extraProp = "realmente una paja"
+
+// 	parent.print = function(){
+// 		parent.print();
+// 		c(parent.extraProp);
+// 	}
+
+// 	return parent;
+
+// }
+
+// // Child.prototype = Object.create(InputBuilder.prototype);
+// var elpapa = new InputBuilder();
+// var elchild = new Child();
+// // elchild.print();
+// // c(elchild.b)
 
 
