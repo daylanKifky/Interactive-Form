@@ -1,3 +1,69 @@
+
+//////////////////////////////////
+/// VALIDATOR / TODO: put on separated file 
+//////////////////////////////////
+
+var validator = {
+	empty_message : "empty value",
+	tooLong_message : function(num){return "please enter a string shorter than " + num + " characters"},
+	val: "",
+	errno : 0,
+	errors : {},
+	base : function(input){
+		validator.val = input.val();
+		var message = false; 
+		if (validator.val === ""){
+			message = validator.empty_message;
+			return;
+		}
+		//check and set message if error found
+		
+		validator.displayMessage(input, message);
+	},
+	if_sitio_web : function(input){
+		validator.val = input.val();
+		var message = false; 
+		if (validator.val === ""){
+			message = validator.empty_message;
+			return;
+		}
+
+		if (!validator.noLonguerThan(100))
+			message = validator.tooLong_message(100);
+
+		if (!validator.containsStr("http://") && !validator.containsStr("https://"))
+			message = "Please enter a valid website (starting with 'http://' or 'https://')";
+
+		validator.displayMessage(input, message);
+	},
+
+	displayMessage: function(element, msg){
+		if (msg)
+			element.parent().prepend("<span>"+msg+"</span>");
+
+	},
+
+	noLonguerThan: function(size){
+		return (validator.val.length < size);
+	},
+	noShorterThan: function(size){
+		return (validator.val.length > size);
+	},
+	containsStr: function(str){
+		c(validator.val);
+
+		c(validator.val.indexOf(str));
+		return (validator.val.indexOf(str) != -1); 
+	},
+	isInt:function(){
+		return validator.val === parseInt(validator.val);
+	}
+
+
+
+}
+
+
 //////////////////////////////////
 /// Utility 
 //////////////////////////////////
@@ -28,6 +94,34 @@ var c = console.log;
 		theForm = new IForm(configuration);
 		theForm.createElements();
 		theForm.setEvents();
+		theForm.setValidation();
+
+
+
+		//////////////////////////////////
+		/// Extras 
+		//////////////////////////////////
+		// $('#laconcjaha').on("change",function(e){
+		// 	var input = this;
+		// 	c(e);
+		// 	c(input.val());
+		// 	$('#if-tel-option').html(input.val());
+		// }).change();
+		$('#if-header-tel input').on("change",function(e){
+			var value = "<strong>Telefono (";
+			value += $( this ).val();
+			value += ")</strong>";
+			$('#if-tel-option').html(value);
+		});
+
+		$('#if-header-mail input').on("change",function(e){
+			var value = "<strong>E-mail (";
+			value += $( this ).val();
+			value += ")</strong>";
+			$('#if-email-option').html(value);
+		});
+
+
 	});
 }(jQuery));
 
@@ -88,6 +182,7 @@ function IForm(config){
 	this._cookieID = Cookies.get(config.cookieID);
 	this._mainSubmitLabel = config.main_submit_label;
 
+	this._validator = validator;
 
 	//////////////////////////////////
 	/// DATA 
@@ -115,7 +210,6 @@ IForm.prototype = {
 	createElements: function(){
 		var iform = this;
 		$(IForm_ImageBuilder.prototype.if_class).each(function(){
-			c(this);
 				new IForm_ImageBuilder($(this), 
 					IForm.prototype.imageDefaults, 
 					iform.data.images);
@@ -126,6 +220,21 @@ IForm.prototype = {
 	/// EVENTS 
 	//////////////////////////////////
 	
+	setValidation: function(){
+		var iform = this;
+		$( "input[type='text']" ).change(function() {
+			var input = $(this);
+			var handler = iform._validator[input.attr("id")];
+			if (typeof handler !== "undefined")
+				handler(input);
+			else
+				c("Missing validator for: " + input.attr("name"));
+ 			
+ 			// if (validator.errno > 0){}
+
+		});
+	},
+
 	setImageSrc:function(obj, imageData){
 		$(obj)
 			.siblings(this._silbingImage)
@@ -171,7 +280,7 @@ IForm.prototype = {
 			event.preventDefault();
 			iform.files.append("CLIENT_ID", iform._cookieID);
 
-			if (typeof iform.data.images[0].file != undefined)
+			if (typeof iform.data.images[0].file !== "undefined")
 			$.ajax({
 				url:'recibe_files.php',
 				type:"POST",
@@ -226,6 +335,14 @@ IForm.prototype = {
 		}); //on button click end
 	} //setSubmitEvent end
 }
+
+
+//////////////////////////////////
+/// EXTRAS 
+//////////////////////////////////
+
+
+
 
 
 
