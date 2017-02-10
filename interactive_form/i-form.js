@@ -1,20 +1,33 @@
+//////////////////////////////////
+/// Utility 
+//////////////////////////////////
+
 var c = console.log;
+
+//////////////////////////////////
+/// Onload 
+//////////////////////////////////
 (function($){
 	$(document).ready(function(){
-		//Questo sarebbe l'uso basico della parte che già funziona. (adesso commentato per provare l'inheritance)
-		theForm = new IForm($);
+
+		//////////////////////////////////
+		/// IFORM CONFIG 
+		//////////////////////////////////
+
+		var configuration = {
+			userInputKey: 'user_input',
+			cookieID : 'id_client',
+			main_submit_label :'Enviar'
+		};
+
+
+		//////////////////////////////////
+		/// Run 
+		//////////////////////////////////
+		
+		theForm = new IForm(configuration);
 		theForm.createElements();
 		theForm.setEvents();
-	
-
-		//Si prendono tutti i div con una classe "if-image-loader" e si creano i
-		//elementi necesari (un input, un label, e un img)
-		//
-		//Poi si settano i eventi.
-		//
-		//L'idea è che IForm, oltre a chiamare i Builder e settare eventi, 
-		//porta un registro dei dati caricati in IForm.data 
-
 	});
 }(jQuery));
 
@@ -64,14 +77,16 @@ function IForm_TextBuilder(	jQObject,
 /// IFORM 
 //////////////////////////////////
 
-function IForm(){
+function IForm(config){
 	this._loaders = "input.if-image-loader";
 	this._silbingImage = ".if-up-image";
 	this._fileLoaded = "if-file-loaded";
 	this._submitBtn = "input#if-sumbit";
 	this._form = "#i-form";
-	this._userInputKey = 'user_input'; //INI
-	this._cookieID = Cookies.get('id_client');
+
+	this._userInputKey = config.userInputKey;
+	this._cookieID = Cookies.get(config.cookieID);
+	this._mainSubmitLabel = config.main_submit_label;
 
 
 	//////////////////////////////////
@@ -152,7 +167,8 @@ IForm.prototype = {
 	setSubmitEvent:function(){
 		var iform = this;
 
-		$(this._form).submit(function(event){
+		$(this._submitBtn).click(function(event){
+			event.preventDefault();
 			iform.files.append("CLIENT_ID", iform._cookieID);
 
 			if (typeof iform.data.images[0].file != undefined)
@@ -177,26 +193,38 @@ IForm.prototype = {
 		            return myXhr;
 		    	},
 
-		    	success: function(respose){
-		    		c(respose);
+		    	success: function(response){
+		    		try {
+		    			var result = $.parseJSON(response);
+		    		} catch (e){
+		    			c(response);
+		    			c(e);
+		    		}
+		    		
+
+		    		if (result.errors.length > 0)
+		    			alert("errors"); // TODO HANDLE PROPERLY (redu form?)
+
+		    		result.recivedFiles.forEach(function(image){
+		    			// c(image);
+	    				$('<input />').attr('type', 'hidden')
+	    				         .attr('name', iform._userInputKey+"[imgs]["+ image.field +"]")
+	    				         .attr('value', image.original_name)
+	    				         .appendTo(iform._form);
+		    		});
+
+		    		$("<input type='hidden'/>")
+		    			.attr("name", 'main-submit')
+		    			.attr("value", iform._mainSubmitLabel)
+		    			.appendTo(iform._form);
+
+		    		$(iform._form).submit();
 		    	}
-			});
+			}); //ajax end
 
-			// iform.data.images.forEach(function(image){
-			// 	$('<input />').attr('type', 'hidden')
-			// 	         .attr('name', iform._userInputKey+"[img][]")
-			// 	         .attr('value', image.imageData)
-			// 	         .appendTo(iform._submitBtn);
-			// 	});
-			
-			return false;
-		});
-
-
-		// $(this._submitBtn).click(function(e){
-		// 	e.preventDefault();
-		// });
-	}
+			return true;
+		}); //on button click end
+	} //setSubmitEvent end
 }
 
 
