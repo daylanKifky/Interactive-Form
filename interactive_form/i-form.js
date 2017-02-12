@@ -37,12 +37,7 @@ var c = console.log;
 		//////////////////////////////////
 		/// Extras 
 		//////////////////////////////////
-		// $('#laconcjaha').on("change",function(e){
-		// 	var input = this;
-		// 	c(e);
-		// 	c(input.val());
-		// 	$('#if-tel-option').html(input.val());
-		// }).change();
+
 		$('#if-header-tel input').on("change",function(e){
 			var value = "<strong>Telefono (";
 			value += $( this ).val();
@@ -190,13 +185,14 @@ IForm.prototype = {
 	setImgEvent:function(){
 		var iform = this;
 		$(this._loaders).change(function(event){
-			var data = {name:$(this).attr("name")};
-			if (typeof data.name == "undefined")
+			var data = {name:$(this).attr("name")}; 
+	
+			if (typeof event.target.files[0] == "undefined")
 				return;
 
 			iform.data.images.push(data);
 
-			iform.files.append(data.name, event.target.files[0]);
+			iform.files.set(data.name, event.target.files[0]);
 			
 			data.originalTitle = event.target.files[0].name;
 			data.type = event.target.files[0].type;
@@ -206,6 +202,7 @@ IForm.prototype = {
 			data.uploads ++;
 			iform.setImageSrc(this, data.imageData );
 			iform.setLabelClass(this);
+
 
 			//TODO: add "remove Image button"
 		});
@@ -217,17 +214,17 @@ IForm.prototype = {
 			.attr("value", iform._mainSubmitLabel)
 			.appendTo(iform._form);
 
-		// $(iform._form).submit();
+		$(iform._form).submit();
 	},
 
 	setSubmitEvent:function(){
 		var iform = this;
 
 		$(this._submitBtn).click(function(event){
-			event.preventDefault();
+			// event.preventDefault();
 			iform.files.append("CLIENT_ID", iform._cookieID);
 
-			if (typeof iform.data.images[0].file !== "undefined")
+			if (typeof iform.data.images[0] !== "undefined")
 			$.ajax({
 				url:'recibe_files.php',
 				type:"POST",
@@ -269,9 +266,9 @@ IForm.prototype = {
 		    			c(e);
 		    		}
 		    		
+		    		if (iform._validator.allValidated())
+		    			iform.submitMainForm();
 
-
-		    		iform.submitMainForm();
 		    	}
 			}); //ajax end
 

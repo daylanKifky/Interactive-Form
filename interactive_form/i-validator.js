@@ -241,7 +241,7 @@ validator.allValidated = function(){
 	if (counter == validator.errno)
 		return true;
 
-	console.log("correct: "+ counter+" | total: "+validator.errno);
+	console.log("correct: "+ counter +" | total: "+validator.errno);
 	return false;
 }
 
