@@ -107,6 +107,37 @@ var validator = {
 
 	},
 
+
+	if_public_email : function(input){
+		var message = validator.base(input);
+		if (message)
+			return;
+
+		if (!validator.noLonguerThan(100))
+			message = validator.tooLong_message(100);
+
+		if (!validator.containsStr("@"))
+			message = "Por favor ingresar una direccion de email valida";
+
+		validator.displayMessage(input, message);
+	},
+
+	if_about_long_esp : function (input){
+		var message = validator.base(input);
+		if (message)
+			return;
+		
+		if (!validator.noMoreWordsThan(120))
+			message = "Por favor ingresar una descripcion con no mas de 120 palabras"
+
+		validator.displayMessage(input, message);
+	},
+
+
+	//////////////////////////////////
+	/// Display 
+	//////////////////////////////////
+	
 	displayMessage: function(element, msg){
 		var tooltip = element.siblings('.i-validator-msg');
 		if (msg){
@@ -125,6 +156,12 @@ var validator = {
 		}
 	},
 
+
+	//////////////////////////////////
+	/// UTILS 
+	//////////////////////////////////
+	
+
 	noMoreWordsThan : function(max){
 		return validator.val.split(" ").length < max;
 	},
@@ -142,9 +179,79 @@ var validator = {
 		return validator.val === parseInt(validator.val);
 	}
 
+};
 
 
+validator.setImgValidation = function(){
+	try{
+		var if_img_names = $("span#if_img_names").html().split(",");
+		
+		if_img_names.forEach(function(e){
+			validator[e] = function(input){
+				console.log(input);
+				var message = validator.base(input);
+				if (message){
+					message = "Por favor seleccionar una imagen";
+					return;
+				}
+
+				if (!input[0].files[0].name.match(/[^/]+\.(jpg|jpeg|png|tiff|tif)$/i)){
+					message = "Solamente imagenes en formato 'jpg', 'png', o 'tiff'";
+				}
+
+				if (input[0].files[0].size > 20*1024*1024)
+					message = "Solamente imagenes de menos de 20 Mb";
+
+				validator.displayMessage(input, message);
+
+			}
+		});
+
+	} catch (e){
+
+	}
 }
+
+//////////////////////////////////
+/// Same as 
+//////////////////////////////////
+
 
 validator.if_public_direccion = validator.if_public_nombre_local;
 validator.if_about_short_eng = validator.if_about_short_esp;
+validator.if_about_long_eng = validator.if_about_long_esp;
+
+validator.if_facebook = validator.if_sitio_web;
+validator.if_instagram = validator.if_sitio_web;
+
+validator.if_tel_movil = validator.if_public_tel;
+validator.if_tel_fijo = validator.if_public_tel; 
+validator.if_email = validator.if_public_email;
+validator.if_email_factura = validator.if_public_email;
+validator.if_dir_factura = validator.if_public_nombre_local;
+validator.if_nombre_empresa = validator.if_public_nombre_local;
+validator.if_cif_nif = validator.if_public_nombre_local;
+
+validator.allValidated = function(){
+	var counter = 0;
+	for (var err in validator.errors){ 
+		if (validator.errors.hasOwnProperty(err) && validator.errors[err] === "ok") 
+			counter ++; 
+	}
+	if (counter == validator.errno)
+		return true;
+
+	console.log("correct: "+ counter+" | total: "+validator.errno);
+	return false;
+}
+
+validator.preventEarlySubmit = function(submitHandler){
+	$(window).keydown(function(event){
+	    if( (event.keyCode == 13)) {
+	      event.preventDefault();
+	      if (validator.allValidated())
+	      	submitHandler();
+	      
+	    }
+	});
+}

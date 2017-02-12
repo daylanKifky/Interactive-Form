@@ -28,8 +28,10 @@ var c = console.log;
 		theForm = new IForm(configuration);
 		theForm.createElements();
 		theForm.setEvents();
-		theForm.setValidation();
 
+		validator.setImgValidation();
+		theForm.setValidation();
+		validator.preventEarlySubmit(theForm.submitMainForm);
 
 
 		//////////////////////////////////
@@ -71,7 +73,7 @@ function IForm_ImageBuilder(jQObject,
 							dataObj){
 	this.type = "image";
 	this.subtype = "foto"
-	this.id = jQObject.attr("id")+"-input";
+	this.id = jQObject.attr("id")+"_input";
 	this.name = jQObject.attr("if-label");
 	this.dimensions = imgSpecs.dimensions;
 	this.formats = imgSpecs.formats;
@@ -189,6 +191,9 @@ IForm.prototype = {
 		var iform = this;
 		$(this._loaders).change(function(event){
 			var data = {name:$(this).attr("name")};
+			if (typeof data.name == "undefined")
+				return;
+
 			iform.data.images.push(data);
 
 			iform.files.append(data.name, event.target.files[0]);
@@ -204,6 +209,15 @@ IForm.prototype = {
 
 			//TODO: add "remove Image button"
 		});
+	},
+	submitMainForm:function(){
+		var iform = this;
+		$("<input type='hidden'/>")
+			.attr("name", 'main-submit')
+			.attr("value", iform._mainSubmitLabel)
+			.appendTo(iform._form);
+
+		// $(iform._form).submit();
 	},
 
 	setSubmitEvent:function(){
@@ -238,29 +252,26 @@ IForm.prototype = {
 		    	success: function(response){
 		    		try {
 		    			var result = $.parseJSON(response);
+			    	
+			    		if (result.errors.length > 0)
+			    			alert("errors"); // TODO HANDLE PROPERLY (redu form?)
+
+			    		result.recivedFiles.forEach(function(image){
+			    			// c(image);
+		    				$('<input />').attr('type', 'hidden')
+		    				         .attr('name', iform._userInputKey+"[imgs]["+ image.field +"]")
+		    				         .attr('value', image.original_name)
+		    				         .appendTo(iform._form);
+			    		});
+		    		
 		    		} catch (e){
 		    			c(response);
 		    			c(e);
 		    		}
 		    		
 
-		    		if (result.errors.length > 0)
-		    			alert("errors"); // TODO HANDLE PROPERLY (redu form?)
 
-		    		result.recivedFiles.forEach(function(image){
-		    			// c(image);
-	    				$('<input />').attr('type', 'hidden')
-	    				         .attr('name', iform._userInputKey+"[imgs]["+ image.field +"]")
-	    				         .attr('value', image.original_name)
-	    				         .appendTo(iform._form);
-		    		});
-
-		    		$("<input type='hidden'/>")
-		    			.attr("name", 'main-submit')
-		    			.attr("value", iform._mainSubmitLabel)
-		    			.appendTo(iform._form);
-
-		    		$(iform._form).submit();
+		    		iform.submitMainForm();
 		    	}
 			}); //ajax end
 
