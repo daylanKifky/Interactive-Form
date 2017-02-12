@@ -1,69 +1,3 @@
-
-//////////////////////////////////
-/// VALIDATOR / TODO: put on separated file 
-//////////////////////////////////
-
-var validator = {
-	empty_message : "empty value",
-	tooLong_message : function(num){return "please enter a string shorter than " + num + " characters"},
-	val: "",
-	errno : 0,
-	errors : {},
-	base : function(input){
-		validator.val = input.val();
-		var message = false; 
-		if (validator.val === ""){
-			message = validator.empty_message;
-			return;
-		}
-		//check and set message if error found
-		
-		validator.displayMessage(input, message);
-	},
-	if_sitio_web : function(input){
-		validator.val = input.val();
-		var message = false; 
-		if (validator.val === ""){
-			message = validator.empty_message;
-			return;
-		}
-
-		if (!validator.noLonguerThan(100))
-			message = validator.tooLong_message(100);
-
-		if (!validator.containsStr("http://") && !validator.containsStr("https://"))
-			message = "Please enter a valid website (starting with 'http://' or 'https://')";
-
-		validator.displayMessage(input, message);
-	},
-
-	displayMessage: function(element, msg){
-		if (msg)
-			element.parent().prepend("<span>"+msg+"</span>");
-
-	},
-
-	noLonguerThan: function(size){
-		return (validator.val.length < size);
-	},
-	noShorterThan: function(size){
-		return (validator.val.length > size);
-	},
-	containsStr: function(str){
-		c(validator.val);
-
-		c(validator.val.indexOf(str));
-		return (validator.val.indexOf(str) != -1); 
-	},
-	isInt:function(){
-		return validator.val === parseInt(validator.val);
-	}
-
-
-
-}
-
-
 //////////////////////////////////
 /// Utility 
 //////////////////////////////////
@@ -142,7 +76,7 @@ function IForm_ImageBuilder(jQObject,
 	this.dimensions = imgSpecs.dimensions;
 	this.formats = imgSpecs.formats;
 
-	this.input = '<input class="if-image-loader" type="file"' +
+	this.input = '<input class="if-image-loader i-validator" type="file"' +
 				' name="'+ this.name + 
 				'" id="'+ this.id +'" />';
 	this.elements = '<img class="if-up-image" src="" alt="User uploaded Image">'+
@@ -155,17 +89,6 @@ function IForm_ImageBuilder(jQObject,
 
 	IForm_ImageBuilder.prototype.if_class = ".if-image-loader";
 
-
-//////////////////////////////////
-/// TEXT INPUT BUILDER 
-//////////////////////////////////
-
-function IForm_TextBuilder(	jQObject, 
-							textSpecs,
-							dataObj ){
-
-
-}
 
 //////////////////////////////////
 /// IFORM 
@@ -222,7 +145,12 @@ IForm.prototype = {
 	
 	setValidation: function(){
 		var iform = this;
-		$( "input[type='text']" ).change(function() {
+		$( ".i-validator" )
+		.each(function(){
+				iform._validator.errors[$(this).attr("id")] = "empty";
+				iform._validator.errno ++;
+			})
+		.change(function() {
 			var input = $(this);
 			var handler = iform._validator[input.attr("id")];
 			if (typeof handler !== "undefined")
@@ -230,9 +158,14 @@ IForm.prototype = {
 			else
 				c("Missing validator for: " + input.attr("name"));
  			
- 			// if (validator.errno > 0){}
-
 		});
+		var counter = 0;
+		for (var err in validator.errors){ 
+			if (validator.errors.hasOwnProperty(err)) 
+				counter ++; 
+		}
+		if (counter < iform._validator.errno)
+			console.log("some validator elements without id!")
 	},
 
 	setImageSrc:function(obj, imageData){
