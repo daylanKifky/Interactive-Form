@@ -17,7 +17,8 @@ var c = console.log;
 		var configuration = {
 			userInputKey: 'user_input',
 			cookieID : 'id_client',
-			main_submit_label :'Enviar'
+			main_submit_label :'Enviar',
+			user_imgs : 'user_imgs'
 		};
 
 
@@ -79,6 +80,8 @@ function IForm_ImageBuilder(jQObject,
 	this.elements = '<img class="if-up-image" src="" alt="User uploaded Image">'+
                     '<label for="'+this.id+'"></label>';
 
+    this.uploadBar = null;
+
     var newImgForm = $(this.input);
     jQObject.html(newImgForm).append(this.elements);
     dataObj[this.name] = {imageData:"", uploads:0, originalTitle:"", type:""};
@@ -101,6 +104,7 @@ function IForm(config){
 	this._userInputKey = config.userInputKey;
 	this._cookieID = Cookies.get(config.cookieID);
 	this._mainSubmitLabel = config.main_submit_label;
+	this._userImgs = config.user_imgs;
 
 	this._validator = validator;
 
@@ -144,11 +148,15 @@ IForm.prototype = {
 		var iform = this;
 		$( ".i-validator" )
 		.each(function(){
-				iform._validator.errors[$(this).attr("id")] = "empty";
+				var input = $(this);
+				iform._validator.errors[input.attr("id")] = "empty";
+				iform._validator.showMessage = false;
+				iform._validator[input.attr("id")](input);
 				iform._validator.errno ++;
 			})
 		.change(function() {
 			var input = $(this);
+			iform._validator.showMessage = true;
 			var handler = iform._validator[input.attr("id")];
 			if (typeof handler !== "undefined")
 				handler(input);
@@ -221,67 +229,127 @@ IForm.prototype = {
 		var iform = this;
 
 		$(this._submitBtn).click(function(event){
-			// event.preventDefault();
-			iform.files.append("CLIENT_ID", iform._cookieID);
+			event.preventDefault();
+			iform.files.set("CLIENT_ID", iform._cookieID);
 
-			if (typeof iform.data.images[0] !== "undefined")
-			$.ajax({
-				url:'recibe_files.php',
-				type:"POST",
-				data: iform.files,
-				cache: false,
-				contentType: false,
-		    	processData: false,
+			if (typeof iform.data.images[0] !== "undefined" && iform._validator.allValidated()){
+				$('#if-loading').removeClass("if-hide");
+				var bar = new ProgressBar.SemiCircle()
 
-		    	xhr: function(){
-		    		var myXhr = $.ajaxSettings.xhr();
-		    		if (myXhr.upload) {
-		                // For handling the progress of the upload
-		                myXhr.upload.addEventListener('progress', function(e) {
-		                    if (e.lengthComputable) {
-		                    	c( e.loaded + " | " + e.total);
-		                    }
-		                } , false);
-		            }
-		            return myXhr;
-		    	},
+				$.ajax({
+					url:'recibe_files.php',
+					type:"POST",
+					data: iform.files,
+					cache: false,
+					contentType: false,
+			    	processData: false,
 
-		    	success: function(response){
-		    		try {
-		    			var result = $.parseJSON(response);
-			    	
-			    		if (result.errors.length > 0)
-			    			alert("errors"); // TODO HANDLE PROPERLY (redu form?)
 
-			    		result.recivedFiles.forEach(function(image){
-			    			// c(image);
-		    				$('<input />').attr('type', 'hidden')
-		    				         .attr('name', iform._userInputKey+"[imgs]["+ image.field +"]")
-		    				         .attr('value', image.original_name)
-		    				         .appendTo(iform._form);
-			    		});
-		    		
-		    		} catch (e){
-		    			c(response);
-		    			c(e);
-		    		}
-		    		
-		    		if (iform._validator.allValidated())
-		    			iform.submitMainForm();
 
-		    	}
-			}); //ajax end
+			    	xhr: function(){
+			    		var myXhr = $.ajaxSettings.xhr();
+			    		if (myXhr.upload) {
+			                // For handling the progress of the upload
+			                myXhr.upload.addEventListener('progress', function(e) {
+			                    if (e.lengthComputable) {
+			                    	c( e.loaded + " | " + e.total + " | " + e.loaded / e.total);
+			                    	iform.progressBar("#progressBar").animate(e.loaded / e.total);
+			                    }
+			                } , false);
+			            }
+			            return myXhr;
+			    	},
 
-			return true;
+			    	success: function(response){
+			    		$('#if-loading').addClass("if-hide");
+			    		try {
+			    			var result = $.parseJSON(response);
+
+				    		if (result.errors.length > 0)
+				    			alert("errors"); // TODO HANDLE PROPERLY (redu form?)
+
+				    		result.recivedFiles.forEach(function(image){
+				    			// c(image);
+			    				$('<input />').attr('type', 'hidden')
+			    				         .attr('name', iform._userInputKey+"["+iform._userImgs+"]["+ image.field +"]")
+			    				         .attr('value', image.original_name)
+			    				         .appendTo(iform._form);
+				    		});
+
+				    		$('<input />').attr('type', 'hidden')
+				    			.attr("name", iform._userInputKey+"["+iform._userImgs+"][sub_path]" )
+				    			.attr("value", result.destSubPath )
+				    			.appendTo(iform._form);
+
+				    		if (result.errors !== [])
+			    				$('<input />').attr('type', 'hidden')
+			    					.attr("name", iform._userInputKey+"["+iform._userImgs+"][errors]" )
+			    					.attr("value", result.errors.toString() )
+			    					.appendTo(iform._form);
+			    		
+			    		} catch (e){
+			    			c(response);
+			    			c(e);
+			    		}
+			    		
+			    		
+			    		 iform.submitMainForm();
+
+			    	}
+				}); //ajax end
+			}
+			else
+				if (iform._validator.allValidated())
+					iform.submitMainForm();
+			// return true;
 		}); //on button click end
-	} //setSubmitEvent end
+	}, //setSubmitEvent end
+
+	progressBar: function(container) {
+		if (this.uploadBar == null)
+			this.uploadBar = new ProgressBar.SemiCircle(container, {
+						  strokeWidth: 6,
+						  color: '#FFEA82',
+						  duration:300,
+						  // trailColor: '#eee',
+						  // trailWidth: 1,
+						  easing: 'easeInOut',
+						  svgStyle: null,
+						  text: {
+						    value: '',
+						    alignToBottom: false,
+						    fontSize: '28px'
+						    // style: {
+						    //        // or fontSize: '28px'
+						    //        'font-size': '28px'
+						    //      }
+						  },
+						  from: {color: '#FFEA82'},
+						  to: {color: '#ED6A5A'},
+						  step: (state, bar) => {
+						     bar.path.setAttribute('stroke', state.color);
+						     var value = Math.round(bar.value() * 100);
+						     if (value === 0) {
+						       bar.setText('');
+						     } else {
+						       bar.setText(value+ "%");
+						     }
+
+						     bar.text.style.color = state.color;
+						   }
+						});
+			this.uploadBar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+			this.uploadBar.text.style.fontSize = '2rem'
+
+		return this.uploadBar;
+	}
+	
 }
 
 
 //////////////////////////////////
 /// EXTRAS 
 //////////////////////////////////
-
 
 
 

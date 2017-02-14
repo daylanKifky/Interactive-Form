@@ -1,4 +1,5 @@
 var validator = {
+	showMessage : false,
 	empty_message : "empty value",
 	tooLong_message : function(num){return "please enter a string shorter than " + num + " characters"},
 	val: "",
@@ -141,12 +142,15 @@ var validator = {
 	displayMessage: function(element, msg){
 		var tooltip = element.siblings('.i-validator-msg');
 		if (msg){
-			if (tooltip.length){
-				tooltip.html(msg)
-			} else {
-				element.parent().prepend("<span class='i-validator-msg'>"+msg+"</span>");
-				
+			if (validator.showMessage){
+				if (tooltip.length){
+					tooltip.html(msg)
+				} else {
+					element.parent().prepend("<span class='i-validator-msg'>"+msg+"</span>");
+					
+				}
 			}
+
 			validator.errors[element.attr("id")] = msg;
 
 		} else {
@@ -233,6 +237,8 @@ validator.if_nombre_empresa = validator.if_public_nombre_local;
 validator.if_cif_nif = validator.if_public_nombre_local;
 
 validator.allValidated = function(){
+	// return true; // BYPASS!!!
+
 	var counter = 0;
 	for (var err in validator.errors){ 
 		if (validator.errors.hasOwnProperty(err) && validator.errors[err] === "ok") 
