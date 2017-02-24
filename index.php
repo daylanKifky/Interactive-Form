@@ -15,8 +15,8 @@
            crossorigin="anonymous">
               
       </script>
-      <link rel="stylesheet" href="interactive_form/i-form.css">
-      <script src="interactive_form/i-form.js"></script>
+      <link rel="stylesheet" href="include/i-form.css">
+      <script src="include/i-form.js"></script>
    </head>
    <body>
       <div class="container i-form">

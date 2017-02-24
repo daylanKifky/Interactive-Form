@@ -287,13 +287,14 @@ IForm.prototype = {
 			    					.attr("value", result.errors.toString() )
 			    					.appendTo(iform._form);
 			    		
+			    		 	iform.submitMainForm();
+			    		
 			    		} catch (e){
 			    			c(response);
 			    			c(e);
 			    		}
 			    		
 			    		
-			    		 iform.submitMainForm();
 
 			    	}
 				}); //ajax end
