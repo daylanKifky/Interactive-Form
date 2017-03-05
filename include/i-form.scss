@@ -1,4 +1,14 @@
-$s: 6.4;
+@font-face {
+    font-family: 'alpaca';
+    src: url('font/alpaca_scarlett_demo-webfont.woff2') format('woff2'),
+         url('font/alpaca_scarlett_demo-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+$s: 7.2 ;
 
 $border : black;
 
@@ -6,8 +16,29 @@ $imgUp_BG_Color: #f2dfdf;
 $imgUp_BD_Color: #67094b;
 $imgUP-file:	"img/upload.png";
 
+$headerLineHeight : 28px;
+$headerLineFontSize : 15px;
 
 $loadingMask_Color : rgba(54, 61, 68, 0.48);
+
+.button-row{
+	margin-top: 20px;
+}
+
+label{
+	cursor:pointer;
+}
+.if-field-error{
+    background-color: rgba(226, 177, 177, 0.68);
+    margin: 4px -8px;
+    padding: 1px 8px;
+    border-radius: 6px;
+}
+
+p.if-opening-text{
+	padding: 2px 4px 8px !important; 
+	font-size: 16px !important;
+}
 
 #if-loading{
 	position: fixed;
@@ -48,19 +79,20 @@ form#i-form{
 
 	img.if-up-image{
 		position: absolute;
-		width:100%;
-		heigth: auto;
 		z-index:-1;
+		max-width:none;
+		max-height:none;
 	}
 
 	label{
 		z-index:1;
 		opacity:1;
-		width: 150px;
-		height: 150px;
-		border: 2px solid $imgUp_BD_Color;
+		// width: 150px;
+		height: 160px;
+		border: 1px dashed $imgUp_BD_Color;
 		background : $imgUp_BG_Color url($imgUP-file) no-repeat center center;
 		cursor: pointer;
+		border-radius: 6px;
 
 		&:hover{
 			background-color : lighten($imgUp_BG_Color, 2);
@@ -92,12 +124,139 @@ form#i-form{
 		// border: 1px solid $border;
 	}
 
-	#if-header-title input{
-		width: 100%;
+	.trend-ribbon-right{
+		font-family: alpaca, sans-serif;
+    	font-size: 22px;
+    	letter-spacing: 1px;
+
+		&:before{
+		    right: 4%;
+		    z-index: -1;
+		}
+	}
+
+
+	#if-header-title{
+		width: 95%;
+		input {
+			width: 100%;
+			padding-left: 12px;
+		}
 	}
 
 	.if-header-line{
 		width: 100%;
-		height: 18px;
+		height: $headerLineHeight;
+		margin: 2px 0px;
+		border: none;
+		font-size: $headerLineFontSize;
+	}
+
+	#if-header-contact{
+		select{
+			background: none;
+			width: 100%;
+			border: none;
+			height: $headerLineHeight;
+    		font-size: $headerLineFontSize;
+		}
+	}
+
+	.if-header-area {
+	    width: 100%;
+	    border: none;
+	}
+}
+
+	.ribbon-container{
+		max-width: 90%;
+		max-height: 32px;
+		box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.3);
+		position: relative;
+		transition: max-width .2s;
+		margin: 0px auto;
+		display: block;
+		width: auto;
+		text-align: center;
+		
+		.trend-ribbon{
+			
+			&:after{
+				z-index : -3
+			}
+			&:before{
+				z-index : -3
+			}
+		}
+
+	}
+
+
+//////////////////////////////////
+/// FIRST FORM 
+//////////////////////////////////
+
+#if-first-form{
+	#if-tipo-anuncio{
+		input{
+			display: inline-block;
+			margin: 8px;
+			cursor:pointer;
+		}
+		span{
+			text-align : center;
+			display: block;
+		}
+	}
+
+	#if-cat-anuncio{
+		div.cat-bar{
+			padding: 4px 10px 0 0;
+		}
+
+		input{
+			margin: 10px;
+			cursor:pointer;
+		}
+
+		label{
+			font-family: alpaca;
+			font-size: 20px;
+			letter-spacing: 1px;
+			color: white;
+			cursor:pointer;
+		}
+
+		img{
+			float:right;
+			margin: 6px;
+		}
+		p{
+			padding: 8px 10px 10px;
+			font-size: 12px;
+		}
+	}
+
+	#if-labels-anuncio{
+		input{
+			margin: 10px;
+			cursor:pointer;
+		}
+	}
+}
+
+
+//////////////////////////////////
+/// MAIN FORM 
+//////////////////////////////////
+
+.if-image-loader{
+	padding: 0;
+	overflow:hidden;
+	border-radius:6px;
+
+	label {
+		width: 100%;
+		height:100%;
 	}
 }

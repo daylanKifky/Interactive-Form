@@ -18,7 +18,7 @@ var c = console.log;
 			userInputKey: 'user_input',
 			cookieID : 'id_client',
 			main_submit_label :'Enviar',
-			user_imgs : 'user_imgs'
+			user_imgs : 'user_imgs',
 		};
 
 
@@ -73,11 +73,12 @@ function IForm_ImageBuilder(jQObject,
 	this.name = jQObject.attr("if-label");
 	this.dimensions = imgSpecs.dimensions;
 	this.formats = imgSpecs.formats;
+	this.transparent = 'http://localhost/trendmap/wp-content/themes/trendmap_theme/img/transparent.gif';
 
 	this.input = '<input class="if-image-loader i-validator" type="file"' +
 				' name="'+ this.name + 
 				'" id="'+ this.id +'" />';
-	this.elements = '<img class="if-up-image" src="" alt="User uploaded Image">'+
+	this.elements = '<img class="if-up-image" src="'+ this.transparent +'" alt="User uploaded Image">'+
                     '<label for="'+this.id+'"></label>';
 
     this.uploadBar = null;
@@ -174,9 +175,40 @@ IForm.prototype = {
 	},
 
 	setImageSrc:function(obj, imageData){
-		$(obj)
+		var loader = $(obj);
+
+		var imgElem = loader
 			.siblings(this._silbingImage)
 			.attr("src", imageData );
+
+		//Center the image
+		var contW = loader.parent().width();
+		var contH = loader.parent().height();
+		var imgW, imgH;
+		var img = new Image();
+        img.onload = function () { //LESS RATIO = MORE "PORTRAIT"
+        	var parentRatio = contW / contH;
+        	var imgRatio = this.width / this.height;
+        	var reduction;
+
+        	if (parentRatio < imgRatio){ 
+	            reduction = contH/this.height;
+	            imgElem.css("margin-left", (-(this.width*reduction)+ contW )/2)
+	            	.css("margin-top", 0)
+	            	.css('width', this.width*reduction )
+	            	.css('height', this.height*reduction);
+
+        	} else if (parentRatio > imgRatio) {
+        		reduction = contW/this.width;
+        		imgElem.css("margin-top", (-(this.height*reduction)+ contH )/2)
+        			.css("margin-left", 0)
+	        		.css('width', this.width*reduction )
+	        		.css('height', this.height*reduction );
+        	}
+
+        };
+        img.src = imageData;
+
 	},
 
 	setLabelClass:function(obj){
