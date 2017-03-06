@@ -3,8 +3,24 @@
   src: url("font/alpaca_scarlett_demo-webfont.woff2") format("woff2"), url("font/alpaca_scarlett_demo-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal; }
+.container.i-form {
+  padding-top: 12px; }
+
+.format-info {
+  background-color: #d8e5f1;
+  padding: 11px;
+  border-radius: 6px; }
+
+.alert-camp {
+  background-color: #ffe8a4;
+  padding: 11px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin: 6px 0px 0px; }
+
 .button-row {
-  margin-top: 20px; }
+  margin-top: 20px;
+  margin-bottom: 50px; }
 
 label {
   cursor: pointer; }
@@ -15,9 +31,35 @@ label {
   padding: 1px 8px;
   border-radius: 6px; }
 
+.i-validator-msg {
+  font-size: 11px;
+  padding: 3px 6px; }
+
 p.if-opening-text {
   padding: 2px 4px 8px !important;
   font-size: 16px !important; }
+
+#if-full-error {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(124, 138, 151, 0.48);
+  z-index: 10; }
+  #if-full-error #wrong-device {
+    width: 300px;
+    height: 260px;
+    background-color: #ffe8a4;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    margin-left: -150px;
+    margin-top: -130px;
+    text-align: center;
+    padding: 4%;
+    font-size: 14px;
+    border-radius: 10px; }
+  #if-full-error.if-hide {
+    display: none; }
 
 #if-loading {
   position: fixed;
@@ -27,30 +69,35 @@ p.if-opening-text {
   z-index: 10; }
   #if-loading #loading-box {
     width: 576px;
-    height: 460.8px;
+    height: 288px;
     background-color: white;
     position: relative;
     top: 50%;
     left: 50%;
     margin-left: -288px;
-    margin-top: -230.4px; }
+    margin-top: -230.4px;
+    text-align: center;
+    padding-top: 4px;
+    font-size: 24px;
+    border-radius: 10px; }
   #if-loading #progressBar {
     left: 25%;
-    width: 50%; }
+    width: 50%;
+    margin: 5% 0; }
   #if-loading.if-hide {
     display: none; }
 
 .i-form.container {
   width: 720px; }
 
-form#i-form .if-image-container {
+#i-form .if-image-container {
   overflow: hidden; }
-form#i-form img.if-up-image {
+#i-form img.if-up-image {
   position: absolute;
   z-index: -1;
   max-width: none;
   max-height: none; }
-form#i-form label {
+#i-form label {
   z-index: 1;
   opacity: 1;
   height: 160px;
@@ -58,47 +105,54 @@ form#i-form label {
   background: #f2dfdf url("img/upload.png") no-repeat center center;
   cursor: pointer;
   border-radius: 6px; }
-  form#i-form label:hover {
+  #i-form label:hover {
     background-color: #f5e6e6; }
-  form#i-form label.if-file-loaded {
+  #i-form label.if-file-loaded {
     opacity: 0.01; }
-    form#i-form label.if-file-loaded:hover {
+    #i-form label.if-file-loaded:hover {
       opacity: 1;
       background: transparent url("img/upload.png") no-repeat center center; }
-form#i-form input[type=file] {
+#i-form input[type=file] {
   width: 0.1px;
   height: 0.1px;
   opacity: 0;
   overflow: hidden;
   position: absolute;
   z-index: -1; }
-form#i-form .trend-ribbon-right {
+#i-form .trend-ribbon-right {
   font-family: alpaca, sans-serif;
   font-size: 22px;
   letter-spacing: 1px; }
-  form#i-form .trend-ribbon-right:before {
+  #i-form .trend-ribbon-right:before {
     right: 4%;
     z-index: -1; }
-form#i-form #if-header-title {
+#i-form #if-header-title {
   width: 95%; }
-  form#i-form #if-header-title input {
+  #i-form #if-header-title input {
     width: 100%;
     padding-left: 12px; }
-form#i-form .if-header-line {
+#i-form .if-header-line {
   width: 100%;
   height: 28px;
   margin: 2px 0px;
   border: none;
   font-size: 15px; }
-form#i-form #if-header-contact select {
+#i-form #if-header-contact select {
   background: none;
   width: 100%;
   border: none;
   height: 28px;
   font-size: 15px; }
-form#i-form .if-header-area {
+#i-form .if-header-area {
   width: 100%;
   border: none; }
+#i-form .if-normal-line {
+  margin: -1px 0px 18px;
+  border: none;
+  box-shadow: -1px 2px 2px rgba(0, 0, 0, 0.21) inset;
+  width: 100%;
+  height: 28px;
+  font-size: 15px; }
 
 .ribbon-container {
   max-width: 90%;
@@ -143,12 +197,91 @@ form#i-form .if-header-area {
   margin: 10px;
   cursor: pointer; }
 
-.if-image-loader {
+#login-form .if-normal-line {
+  margin: -1px 0px 18px;
+  border: none;
+  box-shadow: -1px 2px 2px rgba(0, 0, 0, 0.21) inset;
+  width: 100%;
+  height: 28px;
+  font-size: 15px; }
+
+#i-form #anuncio-print {
+  border: 12px solid white;
+  box-shadow: -1px 3px 8px rgba(0, 0, 0, 0.58);
+  padding-left: 14px;
+  border-right-width: 3px;
+  border-bottom-width: 35px;
+  border-left-width: 19px;
+  margin-bottom: 20px;
+  border-radius: 2px; }
+#i-form .if-image-loader {
   padding: 0;
   overflow: hidden;
   border-radius: 6px; }
-  .if-image-loader label {
+  #i-form .if-image-loader label {
+    width: 100%; }
+  #i-form .if-image-loader.col-xs-12 {
+    height: 240px; }
+    #i-form .if-image-loader.col-xs-12 label {
+      height: 240px; }
+#i-form .main-img {
+  margin-top: 16px; }
+  #i-form .main-img.doble-image-area .if-image-loader.col-xs-12 {
+    height: 480px; }
+    #i-form .main-img.doble-image-area .if-image-loader.col-xs-12 label {
+      height: 480px; }
+#i-form .sec-img {
+  margin-bottom: 16px; }
+  #i-form .sec-img .if-image-loader.col-xs-12 {
+    height: 180px; }
+    #i-form .sec-img .if-image-loader.col-xs-12 label {
+      height: 180px; }
+#i-form #if-body {
+  margin-top: 15px;
+  margin-left: -15px; }
+  #i-form #if-body textarea {
+    font-size: 15px; }
+  #i-form #if-body #if-body-langA {
+    font-weight: bold; }
+
+#confirm-summ {
+  border: 12px solid white;
+  box-shadow: -1px 3px 8px rgba(0, 0, 0, 0.58);
+  padding-left: 14px;
+  border-right-width: 20px;
+  border-bottom-width: 35px;
+  border-left-width: 19px;
+  margin-bottom: 20px;
+  border-radius: 2px; }
+  #confirm-summ h3 {
+    background-color: #A06CBE !important;
+    color: white;
+    padding: 4px; }
+  #confirm-summ h4 {
+    font-weight: bold; }
+
+#if-thumbs div {
+  height: 80px;
+  overflow: hidden;
+  margin-bottom: 20px; }
+#if-thumbs .logo {
+  width: 150px;
+  height: 150px;
+  margin-left: 15px; }
+  #if-thumbs .logo img {
     width: 100%;
-    height: 100%; }
+    height: auto; }
+
+#if-map-thumbs img {
+  margin: 4px 0; }
+
+.if-normal-area {
+  width: 100%;
+  border: none;
+  box-shadow: -1px 2px 2px rgba(0, 0, 0, 0.21) inset; }
+
+.if-field-check {
+  font-size: 22px;
+  margin: 20px; }
 
 /*# sourceMappingURL=i-form.css.map */

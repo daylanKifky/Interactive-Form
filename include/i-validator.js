@@ -1,10 +1,11 @@
 var validator = {
 	showMessage : false,
-	empty_message : "empty value",
-	tooLong_message : function(num){return "please enter a string shorter than " + num + " characters"},
+	empty_message : "Campo vacio",
+	tooLong_message : function(num){return "Por favor ingresar un texto con menos de " + num + " caracteres"},
 	val: "",
 	errno : 0,
 	errors : {},
+	fieldCount:0,
 	allowed_tel_chars : "0123456789+ ".split(""),
 	base : function(input){
 		validator.val = input.val();
@@ -146,7 +147,7 @@ var validator = {
 				if (tooltip.length){
 					tooltip.html(msg)
 				} else {
-					element.parent().prepend("<span class='i-validator-msg'>"+msg+"</span>");
+					element.parent().prepend("<span class='i-validator-msg if-field-error'>"+msg+"</span>");
 					
 				}
 			}
@@ -199,6 +200,9 @@ validator.setImgValidation = function(){
 					return;
 				}
 
+				if (input[0].files[0].name.split(".").length > 2)
+					message= "No estan permitidos los puntos (.) en el nombre de la imagen"
+
 				if (!input[0].files[0].name.match(/[^/]+\.(jpg|jpeg|png|tiff|tif)$/i)){
 					message = "Solamente imagenes en formato 'jpg', 'png', o 'tiff'";
 				}
@@ -247,7 +251,8 @@ validator.allValidated = function(){
 	if (counter == validator.errno)
 		return true;
 
-	console.log("correct: "+ counter +" | total: "+validator.errno);
+	this.fieldCount = counter;
+	// console.log("correct: "+ counter +" | total: "+validator.errno);
 	return false;
 }
 
