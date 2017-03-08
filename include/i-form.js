@@ -297,7 +297,7 @@ IForm.prototype = {
 				$('#if-loading').removeClass("if-hide");
 				var bar = new ProgressBar.SemiCircle()
 
-				$.ajax({
+				var request = $.ajax({
 					url:'recibe_files.php',
 					type:"POST",
 					data: iform.files,
@@ -359,6 +359,13 @@ IForm.prototype = {
 
 			    	}
 				}); //ajax end
+
+				$('#ajax-abort').click(function(){
+					request.abort();
+					$('#if-loading').addClass("if-hide");
+				})
+
+				
 			
 			} else if (iform._validator.allValidated()){
 					iform.submitMainForm();
@@ -370,7 +377,6 @@ IForm.prototype = {
 						// iform._validator.errors[input.attr("id")] = "empty";
 						iform._validator.showMessage = true;
 						iform._validator[input.attr("id")](input);
-						iform._validator.errno ++;
 					});
 				window.scrollTo(0,0);
 			}
