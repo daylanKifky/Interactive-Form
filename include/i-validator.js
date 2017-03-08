@@ -193,7 +193,7 @@ validator.setImgValidation = function(){
 		
 		if_img_names.forEach(function(e){
 			validator[e] = function(input){
-				console.log(input);
+				// console.log(input);
 				var message = validator.base(input);
 				if (message){
 					message = "Por favor seleccionar una imagen";

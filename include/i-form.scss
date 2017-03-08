@@ -22,6 +22,10 @@ $headerLineFontSize : 15px;
 
 $loadingMask_Color : rgba(54, 61, 68, 0.48);
 
+.if-hide {
+    	display: none;
+ 	}
+
 .container.i-form{
 	padding-top: 12px;
 }
@@ -345,6 +349,7 @@ p.if-opening-text{
 	}
 
 .if-image-loader{
+
 	padding: 0;
 	overflow:hidden;
 	border-radius:6px;
@@ -360,6 +365,17 @@ p.if-opening-text{
 		label{
 			height:240px;
 		}
+	}
+	.image-name{
+		position: absolute;
+		    top: 6px;
+		    font-weight: bold;
+		    left: 7px;
+		    background-color: #267882;
+		    color: white;
+		    padding: 7px;
+		    border-radius: 3px;
+		    box-shadow: 0px 0px 4px rgb(98, 194, 255);
 	}
 }
 .main-img{

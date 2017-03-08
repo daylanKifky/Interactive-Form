@@ -3,6 +3,9 @@
   src: url("font/alpaca_scarlett_demo-webfont.woff2") format("woff2"), url("font/alpaca_scarlett_demo-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal; }
+.if-hide {
+  display: none; }
+
 .container.i-form {
   padding-top: 12px; }
 
@@ -224,6 +227,16 @@ p.if-opening-text {
     height: 240px; }
     #i-form .if-image-loader.col-xs-12 label {
       height: 240px; }
+  #i-form .if-image-loader .image-name {
+    position: absolute;
+    top: 6px;
+    font-weight: bold;
+    left: 7px;
+    background-color: #267882;
+    color: white;
+    padding: 7px;
+    border-radius: 3px;
+    box-shadow: 0px 0px 4px #62c2ff; }
 #i-form .main-img {
   margin-top: 16px; }
   #i-form .main-img.doble-image-area .if-image-loader.col-xs-12 {

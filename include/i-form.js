@@ -48,6 +48,7 @@ var c = console.log;
 			cookieID : 'id_client',
 			main_submit_label :'Enviar',
 			user_imgs : 'user_imgs',
+			dummy_image: 'images/img-erro.jpg'
 		};
 
 
@@ -135,7 +136,7 @@ function IForm(config){
 	this._cookieID = Cookies.get(config.cookieID);
 	this._mainSubmitLabel = config.main_submit_label;
 	this._userImgs = config.user_imgs;
-
+	this._dummyImg = config.dummy_image;
 	this._validator = validator;
 
 	//////////////////////////////////
@@ -269,7 +270,20 @@ IForm.prototype = {
 			data.imageData = (URL || webkitURL).createObjectURL(event.target.files[0]);
 			data.file = event.target.files[0];
 			data.uploads ++;
-			iform.setImageSrc(this, data.imageData );
+
+			if (event.target.files[0].name.match(/[^/]+\.(|tiff|tif)$/i)){
+				iform.setImageSrc(this, iform._dummyImg );
+				$(this).parent()
+					.append( "<p class='image-name'>"+data.originalTitle+"</p>" )
+					.removeClass("if-hide");
+
+			} else {
+				$(this).siblings(".image-name").addClass("if-hide");
+				iform.setImageSrc(this, data.imageData );
+					
+
+			}
+
 			iform.setLabelClass(this);
 
 
@@ -351,8 +365,9 @@ IForm.prototype = {
 			    		 	iform.submitMainForm();
 			    		
 			    		} catch (e){
-			    			c(response);
-			    			c(e);
+			    			$('#if-loading').html("<p>Ha ocurrido un error inesperado. Por favor intenta nuevamente mas tarde.</p><button class='btn btn-outline-secondary' id='ajax-abort'>Cerrar</button>").removeClass("if-hide");
+			    			// c(response);
+			    			// c(e);
 			    		}
 			    		
 			    		
